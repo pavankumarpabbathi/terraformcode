@@ -1,6 +1,6 @@
 variable "db_cluster_name" {
-    type = string
-    description = "The cluster identifier/Name of the cluster"
+  type        = string
+  description = "The cluster identifier/Name of the cluster"
 }
 
 variable "engine" {

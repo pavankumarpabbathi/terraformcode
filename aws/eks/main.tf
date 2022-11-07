@@ -8,11 +8,11 @@ locals {
   ##either name or nameprefix
   ng_list = { for ng in var.node_groups : ng.ng_name => ng }
   ng_list_replacements = { for k, v in local.ng_list : k => merge({
-    capacity_type = v.spot ? "SPOT" : "ON_DEMAND"
+    capacity_type  = v.spot ? "SPOT" : "ON_DEMAND"
     instance_types = [v.instance_type]
-    name_prefix   = "${v.ng_name}-art-"
-    k8s_labels = merge(v.k8s_labels, { Environment = var.env })
-  }, v)}
+    name_prefix    = "${v.ng_name}-"
+    k8s_labels     = merge(v.k8s_labels, { Environment = var.env })
+  }, v) }
 }
 
 module "eks" {
@@ -22,9 +22,9 @@ module "eks" {
   cluster_version          = var.cluster.version
   wait_for_cluster_timeout = 900
   subnets                  = var.vpc.subnets
-  vpc_id = var.vpc.id
-  node_groups = local.ng_list_replacements
-  enable_irsa = true
+  vpc_id                   = var.vpc.id
+  node_groups              = local.ng_list_replacements
+  enable_irsa              = true
   map_roles = concat(var.map_roles, [
     {
       rolearn  = aws_iam_role.eks_admin_role.arn

@@ -27,14 +27,6 @@ output "cluster_id" {
   value = module.eks.cluster_id
 }
 
-output "role_arn" {
-  value = module.iam_assumable_role_admin.this_iam_role_arn
-}
-
-output "service_account_name" {
-  value = var.k8s_service_account_name
-}
-
 output "certificate_authority_data" {
   value = data.aws_eks_cluster.cluster.certificate_authority.0.data
 }

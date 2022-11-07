@@ -3,7 +3,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = "${file("../azure-svc-cred.json")}"
+  credentials = file("../azure-svc-cred.json")
   project     = "<ProjectID>"
   region      = "us-east4"
   zone        = "us-east4-a"
