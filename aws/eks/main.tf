@@ -40,24 +40,6 @@ module "eks" {
   map_accounts = var.map_accounts
 }
 
-module "iam_assumable_role_admin" {
-  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "3.6.0"
-  create_role                   = true
-  role_name                     = "${data.aws_eks_cluster.cluster.name}-role"
-  provider_url                  = replace(module.eks.cluster_oidc_issuer_url, "https://", "")
-  role_policy_arns              = [aws_iam_policy.cluster_autoscaler.arn]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:${var.k8s_service_account_namespace}:${var.k8s_service_account_name}"]
-}
-
-resource "aws_iam_policy" "cluster_autoscaler" {
-  name_prefix = "cluster-autoscaler"
-  description = "EKS cluster-autoscaler policy for cluster ${module.eks.cluster_id}"
-  policy      = data.aws_iam_policy_document.cluster_autoscaler.json
-}
-
-data "aws_caller_identity" "account" {}
-
 resource "aws_iam_role" "eks_admin_role" {
   name        = "${var.cluster.name}_eks_admin_role"
   description = "Kubernetes administrator role (for AWS IAM Group based Auth for Kubernetes)"
