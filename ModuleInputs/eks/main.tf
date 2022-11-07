@@ -24,8 +24,8 @@ module "eks" {
   env = local.env
   vpc = {
     name    = "${local.env}"
-    id      = "vpc-03ef38c6bc6095c45"
-    subnets = ["subnet-00e2c4935318f4280", "subnet-0d28ea8521dfe3859", "subnet-02b8b817473097c04"]
+    id      = "vpc-xxxxxxxxx"
+    subnets = []
   }
   cluster = {
     name    = "multi-nodegroup-testing"
