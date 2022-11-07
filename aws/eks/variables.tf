@@ -30,7 +30,7 @@ variable "cluster" {
     version = string
   })
   default = {
-    name    = "argonaut"
+    name = "dev"
     version = "1.21"
   }
 }
