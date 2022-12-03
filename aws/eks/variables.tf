@@ -1,5 +1,5 @@
 variable "aws_region" {
-  default = "us-west-2"
+  description = "Aws region"
 }
 
 variable "default_tags" {
@@ -7,20 +7,9 @@ variable "default_tags" {
   type        = map(string)
 }
 
-variable "spot_tags" {
-  description = "Spot tags"
-  type        = map(string)
-}
-
-variable "on_demand_tags" {
-  description = "On demand tags"
-  type        = map(string)
-}
-
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap."
   type        = list(string)
-  default     = []
 }
 
 variable "cluster" {
@@ -31,14 +20,13 @@ variable "cluster" {
   })
   default = {
     name    = "dev"
-    version = "1.21"
+    version = "1.22"
   }
 }
 
 variable "vpc" {
   description = "All vpc info"
   type = object({
-    name    = string
     id      = string
     subnets = list(string)
   })
@@ -47,8 +35,7 @@ variable "vpc" {
 variable "node_groups" {
   description = "list of nodegroups to create"
   type = list(object({
-    # name_prefix      = string
-    ng_name          = string
+    ng_name = string
     desired_capacity = number
     max_capacity     = number
     min_capacity     = number
@@ -68,7 +55,6 @@ variable "map_users" {
     username = string
     groups   = list(string)
   }))
-  default = []
 }
 
 variable "map_roles" {
@@ -78,7 +64,6 @@ variable "map_roles" {
     username = string
     groups   = list(string)
   }))
-  default = []
 }
 
 variable "env" {
