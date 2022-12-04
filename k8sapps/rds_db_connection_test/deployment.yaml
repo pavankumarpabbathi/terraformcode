@@ -19,7 +19,7 @@ spec:
       imagePullPolicy: Always
       containers:
       - name: "flask"
-        image: "<imageurl>"
+        image: "<IMAGEURL>"
 
 
 ---
