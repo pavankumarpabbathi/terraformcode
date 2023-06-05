@@ -1,9 +1,4 @@
-variable "vm_name" {
-    type = string
-    description = "The name of the Linux Virtual Machine."
-    default = null
-}
-
+####Common Variables#####
 variable "resource_group_name" {
   description = "Name of the resource group"
   type        = string
@@ -14,6 +9,18 @@ variable "location" {
   type        = string
   description = "The Azure location where the Linux Virtual Machine should exist."
   default     = null
+}
+
+variable "vm_name" {
+    type = string
+    description = "The name of the Linux Virtual Machine."
+    default = null
+}
+
+variable "publicip_address_enabled" {
+    type = bool
+    description = "Public IP should be enabled or not"
+    default = null
 }
 
 variable "vm_subnet_name" {
@@ -40,8 +47,8 @@ variable "admin_password" {
   default     = "admin123#"
 } 
 
-variable "image_id" {
-  type        = string
-  description = "The ID of the Image which this Virtual Machine should be created from"
-  default     = null
-} 
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags which should be assigned to the Resource Group."
+  default     = {}
+}
