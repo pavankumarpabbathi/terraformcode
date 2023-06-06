@@ -9,12 +9,12 @@ resource "azurerm_public_ip" "publicip" {
 
 
 resource "azurerm_network_security_group" "sg" {
-  name                = "${var.vm_name}-nsg-"
+  name                = "${var.vm_name}-vms-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
 
   security_rule {
-    name                       = "Allow windows"
+    name                       = "Allowwindows"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
@@ -48,28 +48,42 @@ resource "azurerm_network_interface_security_group_association" "enic_associatio
   network_security_group_id = azurerm_network_security_group.sg.id
 }
 
-resource "azurerm_linux_virtual_machine" "vm" {
-  name                = var.vm_name
+resource "azurerm_virtual_machine" "vm" {
+  name                  = var.vm_name
   tags = var.tags
   resource_group_name = var.resource_group_name
   location            = var.location
-  size                = var.node_size
-  admin_username      = var.admin_username
-  admin_password      = var.admin_password
+  vm_size             = var.node_size
+  delete_os_disk_on_termination = true
   network_interface_ids = [
     azurerm_network_interface.enic.id,
   ]
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+  
+  os_profile {
+    computer_name       = var.vm_name
+    admin_username      = var.admin_username
+    admin_password      = var.admin_password
   }
   
+  os_profile_windows_config {}
+  # disable_password_authentication = false
   #source_image_id = var.image_id
-  source_image_reference {
+  storage_image_reference {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
     sku       = "2022-Datacenter"
     version   = "latest"
   }
+  storage_os_disk {
+    name              = "${var.vm_name}-os-disk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+}
+
+data "azurerm_virtual_machine" "vmdata" {
+  depends_on = [azurerm_network_interface.enic, azurerm_network_interface_security_group_association.enic_association, azurerm_virtual_machine.vm]
+  name                = var.vm_name
+  resource_group_name = var.resource_group_name
 }
