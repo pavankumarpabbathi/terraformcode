@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A stack for deploying a simple lambda function that has a static outbound (egress) IP Address
+Parameters:
+  FunctionName:
+    Type: String
+    Description: "Name for the lambda function"
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        Path: "/"
+        Policies:
+          -
+            PolicyName: "S3-read-write"
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                -
+                  Effect: Allow
+                  Action: s3:ListBucket
+                  Resource: "arn:aws:s3:::*"
+                -
+                  Effect: Allow
+                  Action: s3:*Object
+                  Resource: "arn:aws:s3:::*/*"
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      Description: Lambda Function with code to upload messages to s3 bucket
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          import json
+          
+          def lambda_handler(event, context):
+          
+              return "hello world" 
+
+      Handler: !Sub "lambda_function.lambda_handler"
+      Runtime: python3.9
+      Timeout: 300
+      Role: !GetAtt LambdaRole.Arn
+Outputs:
+  LambdaRoleArn:
+     Description: Lambda Function Role Arn
+     Value: !GetAtt LambdaRole.Arn
+  FunctionArn:
+     Description: Lambda Function Role Arn
+     Value: !GetAtt LambdaFunction.Arn   
