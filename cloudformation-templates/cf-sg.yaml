@@ -1,0 +1,42 @@
+Description: >
+    This template contains the security groups and security group rules required for entire stack.
+
+Parameters:
+    VPC:
+        Type: AWS::EC2::VPC::Id
+        Description: Choose which VPC the security groups should be deployed to
+    SGName:
+        Type: String
+        Description: The name of the security group.
+    SGDescription:
+        Type: String
+        Description: A description for the security group.    
+Resources:
+    SecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties: 
+            VpcId: !Ref VPC
+            GroupDescription: !Ref SGDescription
+            GroupName: !Ref SGName
+            SecurityGroupIngress:
+                # HTTP: Allow access from anywhere 
+                - CidrIp: 0.0.0.0/0
+                  IpProtocol: tcp
+                  FromPort: '80'
+                  ToPort: '80'
+                # HTTPS: Allow access from anywhere 
+                - CidrIp: 0.0.0.0/0
+                  IpProtocol: tcp
+                  FromPort: '443'
+                  ToPort: '443'  
+            SecurityGroupEgress:
+                - IpProtocol : "-1"
+                  CidrIp: 0.0.0.0/0      
+            Tags: 
+                - Key: Name
+                  Value: !Ref SGName
+
+Outputs:
+    SecurityGroupID:
+        Description: A reference to the security group 
+        Value: !Ref SecurityGroup
